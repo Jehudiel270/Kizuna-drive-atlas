@@ -90,10 +90,16 @@ def rows_from_db(db: Session, include_excluded: bool = False) -> list[dict]:
     return out
 
 
-def _frame(rows: list[dict]) -> pd.DataFrame:
+def _frame(rows: list[dict], codebook: dict) -> pd.DataFrame:
     if not rows:
-        return pd.DataFrame({"_id": [], "_respondent": [], "_submitted_at": [], "_completed": []})
-    return answers_rows_to_frame(rows)
+        frame = pd.DataFrame({"_id": [], "_respondent": [], "_submitted_at": [], "_completed": []})
+    else:
+        frame = answers_rows_to_frame(rows)
+    for variable in codebook["variables"]:
+        name = variable["name"]
+        if name not in frame:
+            frame[name] = pd.Series(index=frame.index, dtype=object)
+    return frame
 
 
 def _prune() -> None:
@@ -115,10 +121,11 @@ def load_source(db: Session, snapshot_id: int | None = None) -> Source:
             if key in _DATA_CACHE:
                 return _DATA_CACHE[key]
         rows = [dict(r, submitted_at=pd.to_datetime(r.get("submitted_at"), utc=True) if r.get("submitted_at") else None) for r in snap.rows]
-        raw = _frame(rows)
-        src = Source(plan=plan, codebook=snap.codebook or P.get_codebook(), raw=raw, df=C.build_dataset(raw, plan), key=key, kind="snapshot", snapshot_id=snap.id,
+        codebook = snap.codebook or P.get_codebook()
+        raw = _frame(rows, codebook)
+        src = Source(plan=plan, codebook=codebook, raw=raw, df=C.build_dataset(raw, plan), key=key, kind="snapshot", snapshot_id=snap.id,
                      plan_hash=snap.plan_hash, meta={"name": snap.name, "created_at": snap.created_at.isoformat(), "sha256": snap.sha256})
-        src.labels = short_labels(src.codebook)
+        src.labels = short_labels(codebook)
         with _LOCK:
             _DATA_CACHE[key] = src
             _prune()
@@ -138,7 +145,7 @@ def load_source(db: Session, snapshot_id: int | None = None) -> Source:
         with _LOCK:
             if key in _DATA_CACHE:
                 return _DATA_CACHE[key]
-        raw = _frame(rows_from_db(db))
+        raw = _frame(rows_from_db(db), codebook)
         kind = "live"
     src = Source(plan=plan, codebook=codebook, raw=raw, df=C.build_dataset(raw, plan), key=key, kind=kind, plan_hash=ph)
     src.labels = short_labels(codebook)

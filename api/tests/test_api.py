@@ -103,6 +103,14 @@ def test_reports_and_exports(client, auth):
     assert b"<graphml" in client.get("/analysis/graph/export?kind=modele&fmt=graphml", headers=auth).content
 
 
+def test_dashboard_routes_work_before_first_submission(client, auth):
+    client.post("/ingest/purge", json={"confirm": "SUPPRIMER"}, headers=auth)
+    for path in ("/ingest/status", "/analysis/overview", "/analysis/descriptif", "/analysis/fiabilite",
+                 "/analysis/graph/modele", "/report/preview"):
+        response = client.get(path, headers=auth)
+        assert response.status_code == 200, f"{path}: {response.text}"
+
+
 def test_tally_api_sync_with_mock(client, auth, monkeypatch):
     import httpx
     from app.routers import ingest
