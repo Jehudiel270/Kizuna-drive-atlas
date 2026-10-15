@@ -39,8 +39,8 @@ openssl rand -hex 16   # → EMAIL_SALT   (ne JAMAIS le changer après le début
 
 ## 2. API — Render
 1. https://render.com → *New +* → **Web Service** → connecter le dépôt GitHub.
-2. Réglages : **Root Directory** `api` · **Runtime** `Docker` · **Health Check Path** `/health` · plan **Starter (7 $/mois)** recommandé.
-   *(Le plan gratuit s'endort après 15 min : le webhook Tally peut alors échouer. Si vous restez en gratuit, cliquez sur « Synchroniser » dans l'outil avant d'analyser — rien n'est perdu.)*
+2. Réglages : **Root Directory** `api` · **Runtime** `Docker` · **Health Check Path** `/health` · plan **Free**.
+   *(Le service gratuit s'endort après 15 min sans trafic, puis met environ une minute à redémarrer. Le système de fichiers est éphémère : les données doivent rester dans Neon, jamais dans un fichier SQLite local. Un webhook Tally peut expirer pendant le réveil ; utilisez « Synchroniser » pour rattraper les réponses. Ce plan convient aux essais, mais pas à une collecte de production nécessitant une réception fiable en temps réel.)*
    Alternative : `render.yaml` à la racine → *New + → Blueprint*.
 3. *Environment* — ajouter :
 

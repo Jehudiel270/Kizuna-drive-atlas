@@ -4,7 +4,7 @@ services:
     name: kizuna-atlas-api
     runtime: docker
     rootDir: api
-    plan: starter            # « free » fonctionne mais s'endort après 15 min d'inactivité (le webhook Tally risque d'échouer)
+    plan: free               # gratuit, mais s'endort après 15 min d'inactivité
     healthCheckPath: /health
     envVars:
       - {key: DATABASE_URL, sync: false}
