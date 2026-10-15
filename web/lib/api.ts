@@ -2,7 +2,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 export const BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
-export const DEMO_FLAG = process.env.NEXT_PUBLIC_DEMO === "true";
 
 const safe = {
   get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },

@@ -69,7 +69,6 @@ openssl rand -hex 16   # → EMAIL_SALT   (ne JAMAIS le changer après le début
 | Variable | Valeur |
 |---|---|
 | `NEXT_PUBLIC_API_URL` | `https://VOTRE-API.onrender.com` (sans `/` final) |
-| `NEXT_PUBLIC_DEMO` | `false` |
 
 4. *Deploy*. Copier l'URL obtenue, puis **retourner sur Render** et mettre cette URL dans `CORS_ORIGINS`
    (plusieurs origines possibles, séparées par des virgules ; pour accepter les URLs de prévisualisation Vercel : `CORS_ORIGIN_REGEX=https://kizuna-atlas.*\.vercel\.app`).
@@ -100,7 +99,7 @@ Si une question est renommée ou remplacée dans Tally, vérifier *Données → 
 - [ ] À la fin de la collecte : *Données → Instantanés figés → Figer maintenant*, sélectionner l'instantané, puis *Rapport & exports*.
 
 ## Démonstration publique sans données réelles (optionnel)
-Deuxième service API avec `DEMO_MODE=true` (aucune authentification, données **simulées**) + second projet Vercel avec `NEXT_PUBLIC_DEMO=true` : sert à montrer l'outil dans le rapport sans exposer de données. Un bandeau « données simulées » est affiché en permanence.
+Deuxième service API avec `DEMO_MODE=true` (aucune authentification, données **simulées**) : sert à montrer l'outil dans le rapport sans exposer de données. Le bandeau « données simulées » est activé par l'API.
 
 ## Développement local
 ```bash

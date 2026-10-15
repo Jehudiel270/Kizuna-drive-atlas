@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useCallback, useEffect, useState } from "react";
-import { api, AppCtx, DEMO_FLAG, getSnap, getToken, Me, setSnapStore, setToken, SnapshotInfo } from "@/lib/api";
+import { api, AppCtx, getSnap, getToken, Me, setSnapStore, setToken, SnapshotInfo } from "@/lib/api";
 
 const NAV: { group: string; items: [string, string][] }[] = [
   { group: "Pilotage", items: [["/", "Synthèse"], ["/collecte", "Suivi de collecte"], ["/donnees", "Données & Tally"]] },
@@ -48,7 +48,7 @@ export default function Shell({ children }: { children: ReactNode }) {
           </nav>
         </aside>
         <div className="main">
-          {(me?.demo || DEMO_FLAG) && <div className="banner">Mode démonstration : toutes les données affichées sont <b>simulées</b> (effets plantés pour tester l'outil). Elles ne disent rien sur les PME réelles.</div>}
+          {me?.demo && <div className="banner">Mode démonstration : toutes les données affichées sont <b>simulées</b> (effets plantés pour tester l'outil). Elles ne disent rien sur les PME réelles.</div>}
           {snapObj && <div className="banner" style={{ background: "#6aa8ff1a", color: "#b8d4ff", borderColor: "#6aa8ff44" }}>Instantané figé « {snapObj.name} » ({snapObj.n_rows} lignes, SHA-256 {snapObj.sha256.slice(0, 10)}…) — les chiffres ne changent plus.</div>}
           <header className="top">
             <div className="grow">Formulaire Tally <span className="mono">446dvO</span> · {me?.email}</div>
