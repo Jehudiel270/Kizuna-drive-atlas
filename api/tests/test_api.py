@@ -2,7 +2,9 @@ import base64
 import hashlib
 import hmac
 import json
+from typing import cast
 
+from fastapi import FastAPI
 from app.core import plan as P
 from app.core import synthetic as S
 
@@ -17,6 +19,19 @@ def test_health_and_auth_required(client):
     assert client.get("/health").json()["status"] == "ok"
     assert client.get("/analysis/overview").status_code == 401
     assert client.post("/auth/login", json={"email": "admin@test.io", "password": "mauvais"}).status_code == 401
+
+
+def test_cors_headers_are_kept_on_internal_errors():
+    from app.main import create_app
+    from fastapi.testclient import TestClient
+
+    app = create_app()
+    fastapi_app = cast(FastAPI, app.app)
+    fastapi_app.add_api_route("/test-internal-error", lambda: 1 / 0)
+    with TestClient(app, raise_server_exceptions=False) as test_client:
+        response = test_client.get("/test-internal-error", headers={"Origin": "http://localhost:3000"})
+    assert response.status_code == 500
+    assert response.headers["access-control-allow-origin"] == "http://localhost:3000"
 
 
 def test_webhook_requires_valid_signature(client, auth):

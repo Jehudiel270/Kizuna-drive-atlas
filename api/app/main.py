@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from starlette.types import ASGIApp
 
 from .config import get_settings
 from .db import create_all, session_scope
@@ -23,12 +24,10 @@ async def lifespan(app: FastAPI):
     yield
 
 
-def create_app() -> FastAPI:
+def create_app() -> ASGIApp:
     s = get_settings()
     app = FastAPI(title="KIZUNA ATLAS API", version=VERSION, lifespan=lifespan, docs_url="/docs", redoc_url=None)
     app.add_middleware(GZipMiddleware, minimum_size=1024)
-    app.add_middleware(CORSMiddleware, allow_origins=s.cors_origins, allow_origin_regex=s.cors_origin_regex or None, allow_credentials=False,
-                       allow_methods=["*"], allow_headers=["*"], expose_headers=["Content-Disposition"])
 
     @app.get("/health", tags=["système"])
     def health():
@@ -36,7 +35,9 @@ def create_app() -> FastAPI:
 
     for r in (auth, ingest, config, analysis, quali, snapshots, report):
         app.include_router(r.router)
-    return app
+    # Wrapping FastAPI ensures CORS headers are applied to unhandled 500 responses too.
+    return CORSMiddleware(app=app, allow_origins=s.cors_origins, allow_origin_regex=s.cors_origin_regex or None, allow_credentials=False,
+                          allow_methods=["*"], allow_headers=["*"], expose_headers=["Content-Disposition"])
 
 
 app = create_app()
