@@ -34,6 +34,7 @@ function Connect({ st, reload }: { st: Status; reload: () => void }) {
         <Stat v={st.n_submissions} l="soumissions en base" /><Stat v={st.n_analysable} l="analysables" /><Stat v={st.n_excluded} l="exclues manuellement" />
         <div className="card"><div className="small" style={{ marginBottom: 6 }}>Formulaire</div><a href={st.form_url} target="_blank" rel="noreferrer" className="mono">{st.form_id}</a><div className="note" style={{ marginTop: 6 }}>{Object.entries(st.by_source).map(([k, v]) => `${k} : ${v}`).join(" · ") || "aucune donnée"}</div></div>
       </div>
+      {!st.demo && st.n_submissions === 0 && <div className="callout warn"><strong>Aucune soumission n'est enregistrée.</strong> Les réponses déjà présentes dans Tally ne sont pas importées automatiquement : lancez la synchronisation avec une clé API configurée, ou exportez les réponses depuis Tally puis importez le CSV ci-dessous. Le webhook ne reçoit que les nouvelles réponses après sa configuration.</div>}
       {msg && <div className="callout ok">{msg}</div>}<ErrorBox error={err} />
       <div className="grid g3">
         <Card title="1 · Webhook (temps réel)" sub="Chaque réponse arrive dès qu'elle est envoyée.">

@@ -20,6 +20,7 @@ export default function Shell({ children }: { children: ReactNode }) {
   const [snapshot, setSnap] = useState<string | null>(null);
   const [snapshots, setSnapshots] = useState<SnapshotInfo[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(NAV.map((group) => group.group));
   const isLogin = path.startsWith("/login");
 
   const reloadSnapshots = useCallback(() => { api<SnapshotInfo[]>("/snapshots").then(setSnapshots).catch(() => {}); }, []);
@@ -33,6 +34,12 @@ export default function Shell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setMenuOpen(false);
+    const mobile = window.matchMedia("(max-width: 820px)");
+    const activeGroup = NAV.find((group) => group.items.some(([href]) => href === path || (href !== "/" && path.startsWith(`${href}/`))))?.group ?? "Pilotage";
+    const syncGroups = () => setExpandedGroups(mobile.matches ? [activeGroup] : NAV.map((group) => group.group));
+    syncGroups();
+    mobile.addEventListener("change", syncGroups);
+    return () => mobile.removeEventListener("change", syncGroups);
   }, [path]);
 
   useEffect(() => {
@@ -57,12 +64,23 @@ export default function Shell({ children }: { children: ReactNode }) {
     <AppCtx.Provider value={{ me, snapshot, setSnapshot, snapshots, reloadSnapshots }}>
       <div className="shell">
         <button className={`nav-backdrop${menuOpen ? " visible" : ""}`} type="button" aria-label="Fermer le menu" onClick={() => setMenuOpen(false)} />
-        <aside id="primary-navigation" className={`side${menuOpen ? " open" : ""}`}>
-          <div className="brand"><div className="logo"><i /></div><div><b>Kizuna Atlas</b><small>ICPM Challenge 2026</small></div></div>
+        <aside id="primary-navigation" className={`side${menuOpen ? " open" : ""}`} aria-label="Menu principal">
+          <div className="nav-drawer-head">
+            <div className="brand"><div className="logo"><i /></div><div><b>Kizuna Atlas</b><small>ICPM Challenge 2026</small></div></div>
+            <button className="btn nav-close" type="button" aria-label="Fermer le menu" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+            </button>
+          </div>
           <nav className="nav" aria-label="Navigation principale">
             {NAV.map((g) => (
-              <div key={g.group}><div className="nav-group">{g.group}</div>
-                {g.items.map(([h, l]) => <Link key={h} href={h} className={active(h) ? "on" : ""} aria-current={active(h) ? "page" : undefined}><span className="dot" />{l}</Link>)}</div>
+              <div key={g.group} className="nav-section">
+                <button className="nav-group" type="button" aria-expanded={expandedGroups.includes(g.group)} onClick={() => setExpandedGroups((groups) => groups.includes(g.group) ? groups.filter((group) => group !== g.group) : [...groups, g.group])}>
+                  <span>{g.group}</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5" /></svg>
+                </button>
+                <div className={`nav-group-links${expandedGroups.includes(g.group) ? " expanded" : ""}`}>
+                  {g.items.map(([h, l]) => <Link key={h} href={h} className={active(h) ? "on" : ""} aria-current={active(h) ? "page" : undefined}><span className="dot" />{l}</Link>)}
+                </div>
+              </div>
             ))}
           </nav>
         </aside>
@@ -70,9 +88,9 @@ export default function Shell({ children }: { children: ReactNode }) {
           {me?.demo && <div className="banner">Mode démonstration : toutes les données affichées sont <b>simulées</b> (effets plantés pour tester l'outil). Elles ne disent rien sur les PME réelles.</div>}
           {snapObj && <div className="banner" style={{ background: "#6aa8ff1a", color: "#b8d4ff", borderColor: "#6aa8ff44" }}>Instantané figé « {snapObj.name} » ({snapObj.n_rows} lignes, SHA-256 {snapObj.sha256.slice(0, 10)}…) — les chiffres ne changent plus.</div>}
           <header className="top">
-            <button className="btn menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
+            <button className="btn menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded={menuOpen} aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} onClick={() => setMenuOpen((open) => !open)}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
-              <span>Menu</span>
+              <span className="nav-toggle-label">Menu</span>
             </button>
             <div className="grow">Formulaire Tally <span className="mono">446dvO</span> · {me?.email}</div>
             <select style={{ width: 230 }} value={snapshot ?? ""} onChange={(e) => setSnapshot(e.target.value || null)} aria-label="Jeu de données">
