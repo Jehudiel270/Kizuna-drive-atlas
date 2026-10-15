@@ -21,6 +21,25 @@ def test_health_and_auth_required(client):
     assert client.post("/auth/login", json={"email": "admin@test.io", "password": "mauvais"}).status_code == 401
 
 
+def test_admin_can_create_and_deactivate_accounts(client, auth):
+    assert client.get("/auth/users").status_code == 401
+    created = client.post("/auth/users", headers=auth, json={
+        "email": "analyst@example.com", "name": "Analyste", "password": "initial-secret-123", "role": "analyste",
+    })
+    assert created.status_code == 200
+    account = created.json()
+    assert account["email"] == "analyst@example.com" and account["role"] == "analyste"
+    assert "password" not in account and "password_hash" not in account
+
+    login = client.post("/auth/login", json={"email": account["email"], "password": "initial-secret-123"})
+    assert login.status_code == 200
+    analyst_auth = {"Authorization": f"******"}
+    assert client.get("/auth/users", headers=analyst_auth).status_code == 403
+
+    assert client.delete(f"/auth/users/{account['id']}", headers=auth).status_code == 200
+    assert client.post("/auth/login", json={"email": account["email"], "password": "initial-secret-123"}).status_code == 401
+
+
 def test_cors_headers_are_kept_on_internal_errors():
     from app.main import create_app
     from fastapi.testclient import TestClient

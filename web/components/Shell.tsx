@@ -10,6 +10,7 @@ const NAV: { group: string; items: [string, string][] }[] = [
   { group: "Questions de recherche", items: [["/hypotheses", "Vue d'ensemble H1–H5"], ["/hypotheses/H1", "H1 · Gouvernance"], ["/hypotheses/H2", "H2 · Compétences"], ["/hypotheses/H3", "H3 · Soutien de la direction"], ["/hypotheses/H4", "H4 · Formalisation"], ["/hypotheses/H5", "H5 · Communication"], ["/modeles", "Modèles & diagnostics"], ["/puissance", "Puissance statistique"]] },
   { group: "Exploration", items: [["/carte", "Carte 3D des relations"], ["/qualitatif", "Analyse qualitative"]] },
   { group: "Livrables", items: [["/rapport", "Rapport & exports"], ["/plan", "Plan d'analyse & codebook"]] },
+  { group: "Administration", items: [["/admin/users", "Gestion des accès"]] },
 ];
 
 export default function Shell({ children }: { children: ReactNode }) {
@@ -72,7 +73,7 @@ export default function Shell({ children }: { children: ReactNode }) {
             </button>
           </div>
           <nav className="nav" aria-label="Navigation principale">
-            {NAV.map((g) => (
+            {NAV.filter((g) => g.group !== "Administration" || me?.role === "admin").map((g) => (
               <div key={g.group} className="nav-section">
                 <button className="nav-group" type="button" aria-expanded={expandedGroups.includes(g.group)} onClick={() => setExpandedGroups((groups) => groups.includes(g.group) ? groups.filter((group) => group !== g.group) : [...groups, g.group])}>
                   <span>{g.group}</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5" /></svg>
