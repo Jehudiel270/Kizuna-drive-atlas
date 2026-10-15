@@ -1,0 +1,20 @@
+# Développement local complet : Postgres + API (+ front à lancer avec « npm run dev » dans web/)
+services:
+  db:
+    image: postgres:16-alpine
+    environment: {POSTGRES_USER: kizuna, POSTGRES_PASSWORD: kizuna, POSTGRES_DB: kizuna}
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgresql://kizuna:kizuna@db:5432/kizuna
+      JWT_SECRET: dev-secret-change-me
+      ADMIN_EMAIL: admin@local.test
+      ADMIN_PASSWORD: admin-local-123456
+      CORS_ORIGINS: http://localhost:3000
+      DEMO_MODE: "false"
+      TALLY_FORM_ID: 446dvO
+    ports: ["8000:8000"]
+    depends_on: [db]
+volumes: {pgdata: {}}

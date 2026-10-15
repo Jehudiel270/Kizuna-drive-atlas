@@ -1,0 +1,77 @@
+# Codebook KIZUNA DRIVE — relie chaque question du formulaire Tally (id Tally + libellé)
+# à un nom de variable stable. Source : formulaire Tally 446dvO.
+# types : single | multi | checkbox | scale | number | text | email
+version: 1
+form_id: "446dvO"
+variables:
+  - {name: consent, tally_id: OJqGxA, type: single, section: Ouverture, label: "J'accepte de participer à cette étude"}
+  - {name: mode, tally_id: VM7JWl, type: single, section: Ouverture, label: "Mode de passation de ce questionnaire"}
+  - {name: enqueteur, tally_id: PXQOZ0, type: text, section: Ouverture, label: "Nom de l'enquêteur"}
+  - {name: relais, tally_id: EJVWoL, type: text, section: Ouverture, label: "Relais ayant orienté vers cette PME"}
+  - {name: declared, tally_id: rd9P8L, type: single, section: Avant de commencer, label: "Votre entreprise est-elle déclarée officiellement (par exemple : numéro IFU, registre de commerce), même si ce n'est pas complet ?"}
+  - {name: taille, tally_id: Zzkabv, type: single, section: Avant de commencer, label: "Combien de personnes travaillent régulièrement dans votre entreprise (employés permanents) ?"}
+  - {name: has_project, tally_id: 4o0rlo, type: single, section: Avant de commencer, label: "Depuis janvier 2024, votre entreprise a-t-elle mis en place (ou essayé de mettre en place) un projet numérique ? Par exemple : utiliser WhatsApp ou Facebook pour vendre et parler aux clients, ou utiliser un logiciel pour gérer les stocks, les ventes, l'argent ou les employés. Si vous en avez eu plusieurs, pensez au plus important."}
+  - {name: start_year, tally_id: j74P89, type: single, section: Avant de commencer, label: "En quelle année avez-vous commencé ce projet ?"}
+  - {name: role, tally_id: 2JdP9b, type: single, section: Avant de commencer, label: "Quel était votre rôle dans ce projet ?"}
+  - {name: role_other, tally_id: XB9Vbd, type: text, section: Avant de commencer, label: "Précisez votre fonction"}
+  - {name: secteur, tally_id: xPbY89, type: single, section: A, label: "Dans quel domaine travaille principalement votre entreprise ?"}
+  - {name: secteur_other, tally_id: 8p2vlY, type: text, section: A, label: "Précisez le secteur d'activité"}
+  - {name: anciennete, tally_id: NJNo2b, type: number, section: A, label: "Depuis combien d'années votre entreprise est-elle en activité ?"}
+  - {name: niveaux_hier, tally_id: 96QD4K, type: single, section: A, label: "Combien de niveaux y a-t-il dans votre entreprise, entre le patron et les employés ?"}
+  - {name: form_ecrit, tally_id: qKQV8k, type: scale, section: A, label: "Dans votre entreprise, à quel point les choses sont-elles écrites et organisées ?"}
+  - {name: form_compta, tally_id: d2ePqq, type: single, section: A, label: "Votre entreprise tient-elle une comptabilité régulière (cahier de comptes ou logiciel, bilan chaque année) ?"}
+  - {name: form_contrats, tally_id: YzldD5, type: single, section: A, label: "En général, vos accords avec les clients, les fournisseurs ou les employés sont-ils mis par écrit (contrat signé) ?"}
+  - {name: form_organigramme, tally_id: Dv6e2q, type: single, section: A, label: "Y a-t-il dans l'entreprise des documents ou des règles écrites qui disent qui fait quoi (organigramme, fiches de poste, règles de travail) ?"}
+  - name: form_papiers
+    tally_id: eNRezJ
+    type: checkbox
+    section: A
+    label: "Parmi ces papiers et démarches, lesquels l'entreprise avait-elle au moment du lancement du projet ? (plusieurs réponses possibles)"
+    options:
+      - "Un numéro IFU (identifiant fiscal unique)"
+      - "Une inscription au registre du commerce (RCCM)"
+      - "Le statut d'« entreprenant »"
+      - "Les employés déclarés à la sécurité sociale (CNSS)"
+      - "Un compte bancaire professionnel (au nom de l'entreprise)"
+      - "Je ne sais pas"
+  - {name: famille_propriete, tally_id: llkRDB, type: single, section: A, label: "L'entreprise appartient-elle en grande partie à une même famille ?"}
+  - {name: famille_postes, tally_id: RByLKd, type: single, section: A, label: "Des membres de la famille du patron occupent-ils des postes de responsabilité ou participent-ils aux décisions importantes de l'entreprise ?"}
+  - {name: ville, tally_id: QJ9VNk, type: single, section: A, label: "Ville / commune du siège de l'entreprise"}
+  - {name: ville_other, tally_id: 0jG2W0, type: text, section: A, label: "Précisez la ville / commune"}
+  - {name: digit_niveau, tally_id: Wez5qL, type: single, section: B, label: "Avant le début de ce projet, comment votre entreprise utilisait-elle le numérique dans son travail de tous les jours ?"}
+  - {name: projet_type, tally_id: 9E0QA4, type: multi, section: B, label: "Votre projet numérique concernait quoi ? (vous pouvez cocher les deux)"}
+  - {name: projet_type_other, tally_id: zQgp68, type: text, section: B, label: "Précisez le type de projet"}
+  - {name: porteur, tally_id: V1qzVJ, type: single, section: B, label: "Qui s'est occupé de ce projet ?"}
+  - {name: sur_mesure, tally_id: oVj0Wx, type: single, section: B, label: "L'outil a-t-il été fait ou adapté spécialement pour votre entreprise ?"}
+  - {name: mois_usage, tally_id: GBPoWk, type: number, section: B, label: "Depuis combien de mois utilisez-vous cet outil (ou l'avez-vous utilisé avant de l'abandonner) ? Écrivez 0 si vous ne l'utilisez pas encore."}
+  - {name: financement, tally_id: OBNjvg, type: single, section: B, label: "D'où est venu l'argent pour financer ce projet ?"}
+  - {name: gov_unique, tally_id: e7ORgo, type: scale, section: C, label: "Les décisions clés du projet étaient prises par une seule personne"}
+  - {name: gov_consult, tally_id: WMbzaQ, type: scale, section: C, label: "L'équipe projet a été consultée avant les décisions importantes"}
+  - {name: gov_discute, tally_id: aDJdpy, type: scale, section: C, label: "Les décisions pouvaient être discutées ou remises en question par les membres de l'équipe"}
+  - {name: gov_impose, tally_id: 6O0N65, type: scale, section: C, label: "Le choix de l'outil ou de la personne qui l'installe a été imposé à l'équipe, sans lui demander son avis"}
+  - {name: gov_liens, tally_id: oVLO6e, type: scale, section: C, label: "Des liens de famille ou d'amitié ont influencé certaines décisions du projet (choix du prestataire, choix des responsables)"}
+  - {name: comp_dirigeants, tally_id: 7V0x7z, type: scale, section: D, label: "Les personnes qui dirigeaient le projet savaient comment s'y prendre (elles avaient l'expérience nécessaire)"}
+  - {name: comp_utilisateurs, tally_id: V169gy, type: scale, section: D, label: "Les personnes qui devaient utiliser l'outil étaient à l'aise avec les ordinateurs, les téléphones et les logiciels"}
+  - {name: comp_habitues, tally_id: b8Rd1E, type: number, section: D, label: "Parmi les employés qui ont travaillé sur le projet, combien avaient déjà l'habitude de travailler avec des outils informatiques ou numériques ?"}
+  - {name: comp_nb_employes, tally_id: PBq2Ke, type: number, section: D, label: "Combien d'employés de l'entreprise ont travaillé sur ce projet ?"}
+  - {name: formation, tally_id: AqRvMN, type: single, section: D, label: "Les personnes qui devaient utiliser l'outil ont-elles reçu une formation (avant ou pendant la mise en place) ?"}
+  - {name: formation_heures, tally_id: BQo7JY, type: number, section: D, label: "En moyenne, combien d'heures de formation chaque personne a-t-elle reçues en tout ?"}
+  - {name: recours_externe, tally_id: k7jE8j, type: single, section: D, label: "Si vous avez fait appel à quelqu'un de l'extérieur : était-ce parce que personne dans l'entreprise n'avait les compétences nécessaires ?"}
+  - {name: com_info, tally_id: vO6Y88, type: scale, section: E, label: "Les membres de l'équipe se transmettaient facilement les informations (sans blocage, sans garder l'information pour soi)"}
+  - {name: com_points, tally_id: KJ21rK, type: scale, section: E, label: "Pendant le projet, l'équipe faisait régulièrement le point (réunions, messages de suivi, comptes rendus)"}
+  - {name: com_alerte, tally_id: LJxp42, type: scale, section: E, label: "Quand il y avait un problème, le patron ou le responsable en était vite informé"}
+  - {name: dir_suivi, tally_id: p7qOYE, type: scale, section: F, label: "Le patron (ou la direction) a suivi de près l'avancement du projet"}
+  - {name: dir_moyens, tally_id: 1J0VQL, type: scale, section: F, label: "Le patron a donné à l'équipe les moyens demandés (argent, temps du personnel)"}
+  - {name: dir_blocages, tally_id: MJZRj0, type: scale, section: F, label: "Le patron est intervenu pour régler les blocages rencontrés"}
+  - {name: dir_priorite, tally_id: JJjzE7, type: scale, section: F, label: "Le patron a clairement montré que ce projet était une priorité"}
+  - {name: env_adequation, tally_id: EbOB9r, type: scale, section: Outil et environnement, label: "L'outil correspondait aux besoins réels de l'entreprise"}
+  - {name: env_simplicite, tally_id: rrZ07R, type: scale, section: Outil et environnement, label: "L'outil était simple à utiliser pour le personnel"}
+  - {name: env_coupures, tally_id: 4Nb15Y, type: scale, section: Outil et environnement, label: "Des coupures d'électricité ou de connexion Internet ont perturbé l'utilisation de l'outil"}
+  - {name: env_pression, tally_id: j9V0N4, type: scale, section: Outil et environnement, label: "Des clients, des concurrents ou l'administration nous ont fortement poussés à lancer ce projet"}
+  - {name: usage_actuel, tally_id: g7PG8K, type: single, section: G, label: "Aujourd'hui, comment l'outil est-il utilisé dans votre entreprise ?"}
+  - {name: usage_taux, tally_id: yEAY8W, type: single, section: G, label: "Sur 100 personnes qui devraient utiliser l'outil, combien l'utilisent vraiment aujourd'hui ?"}
+  - {name: arrete, tally_id: XMA06V, type: single, section: G, label: "Le projet a-t-il été arrêté avant d'être terminé ?"}
+  - {name: retour_ancien, tally_id: 8PDx4o, type: single, section: G, label: "Êtes-vous revenus aux anciennes méthodes de travail après avoir mis en place l'outil ?"}
+  - {name: txt_facteur, tally_id: 0J0ORQ, type: text, section: H, label: "Selon vous, qu'est-ce qui a le plus joué dans la réussite ou l'échec de ce projet ?"}
+  - {name: txt_autre, tally_id: zrBY5E, type: text, section: H, label: "Y a-t-il autre chose, dont nous n'avons pas parlé dans ce questionnaire, qui a influencé la réussite ou l'échec du projet ?"}
+  - {name: email, tally_id: 2x6b09, type: email, section: H, label: "Votre e-mail pour recevoir votre Diagnostic de maturité digitale personnalisé"}

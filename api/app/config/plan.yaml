@@ -1,0 +1,157 @@
+# Plan d'analyse pré-enregistré — KIZUNA DRIVE / ICPM Challenge 2026
+# Traduit le protocole de recherche (sections 3.4, 3.5, 4.5, 4.10, 5) en règles exécutables.
+# Toute modification est versionnée (hash) et reportée dans l'annexe du rapport.
+version: 1
+
+general:
+  alpha: 0.05                 # seuil de signification (protocole : tests inférentiels)
+  multiple_testing: holm      # correction appliquée à la famille des 5 tests confirmatoires H1–H5
+  target_n: {min: 150, max: 180}   # taille cible (protocole 4.5)
+  min_months_use: 6           # protocole 3.5 : corroboration par l'utilisation effective à 6 mois
+  min_items_fraction: 0.5     # un score est calculé si au moins 50 % de ses items sont renseignés
+  epv_min: 10                 # événements par paramètre (règle indicative)
+  min_n_model: 40             # en dessous : hypothèses déclarées « non testables »
+  cronbach_min: 0.70          # protocole 4.10
+  likert: {min: 1, max: 5}
+  seed: 20261014
+
+# Issue du projet (variable dépendante) — protocole 3.5 : échec total / échec partiel / succès
+outcome:
+  usage_total_startswith: "On ne l'utilise presque plus"
+  usage_partial_startswith: "Il fonctionne, mais seulement"
+  usage_success_startswith: "Il fonctionne et il est utilisé régulièrement"
+  usage_ongoing_startswith: "Le projet est encore en cours"
+  success_min_rate_class: 3     # classe de taux d'usage ≥ 3 (50–74 %) exigée pour un succès
+  partial_max_rate_class: 2     # classes 1–2 (< 50 %) => au mieux un échec partiel
+  stopped_is_total: true        # « projet arrêté avant d'être terminé » => échec total
+  reverted_is_partial: true     # « retour aux anciennes méthodes » => au moins échec partiel
+  exclude_ongoing: true         # les projets « en cours » ne peuvent pas être classés : exclus des modèles
+
+# Constructs (échelles de Likert 1–5)
+constructs:
+  gouvernance:
+    label: "Gouvernance décisionnelle centralisée (VI1)"
+    items: [gov_unique, gov_impose, gov_consult, gov_discute]
+    reverse: [gov_consult, gov_discute]
+    note: "Haut = décisions concentrées / hiérarchiques ; bas = gouvernance participative."
+  competences:
+    label: "Compétences numériques de l'équipe (VI2)"
+    items: [comp_dirigeants, comp_utilisateurs]
+    reverse: []
+    note: "Auto-évaluation ; complétée par la part d'employés habitués au numérique (vérification objective)."
+  communication:
+    label: "Qualité de la communication interne (VI3)"
+    items: [com_info, com_points, com_alerte]
+    reverse: []
+  soutien:
+    label: "Soutien de la direction générale (VI4, modérateur)"
+    items: [dir_suivi, dir_moyens, dir_blocages, dir_priorite]
+    reverse: []
+  outil_adequation:
+    label: "Adéquation et simplicité de l'outil (contrôle technologique TOE)"
+    items: [env_adequation, env_simplicite]
+    reverse: []
+
+# Formalisation (modérateur catégoriel : informel / semi-formel / formel) — protocole 3.5
+formalisation:
+  weights: {ecrit: 1.0, documents: 1.0, papiers: 1.0}
+  # indice = moyenne pondérée de : (écrit-1)/4 ; part de « Oui » (compta, contrats, organigramme) ; papiers/5
+  thresholds: {informel_lt: 0.34, formel_ge: 0.67}
+  min_category_n: 15
+  papers_counted: ["Un numéro IFU", "Une inscription au registre du commerce", "Le statut d'« entreprenant »", "Les employés déclarés à la sécurité sociale", "Un compte bancaire professionnel"]
+
+# Regroupements pour limiter le nombre de paramètres (150–180 projets)
+groups:
+  taille:
+    "Moins de 10 employés": "<10"
+    "De 10 à 49 employés": "10-49"
+    "De 50 à 199 employés": "50+"
+    "200 employés ou plus": "50+"
+  secteur:
+    "Commerce": Commerce
+    "Services": Services
+    "Santé": Services
+    "Éducation / Formation": Services
+    "Hôtellerie / Restauration / Tourisme": Services
+    "Informatique / Numérique": Services
+    "Industrie": "Production & BTP"
+    "Agroalimentaire": "Production & BTP"
+    "Bâtiment / Construction (BTP)": "Production & BTP"
+    "Transport / Livraison": "Production & BTP"
+    "Autre": Autre
+  porteur:
+    "Uniquement les employés de l'entreprise": Interne
+    "Uniquement une personne ou une société de l'extérieur": Externe
+    "Les deux": Mixte
+
+models:
+  controls: [taille_g, secteur_g, anciennete_z, type_projet]            # protocole : taille, secteur, ancienneté, type de projet
+  extended_controls: [digit_niveau_z, porteur_g, outil_adequation_z, env_coupures_z, env_pression_z]  # TOE : dimensions technologique et environnementale
+  penalize: auto                 # auto = Firth si EPV < epv_min ou séparation ; always ; never
+  holm_family: [H1, H2, H3, H4, H5]
+
+# Garde-fous réseau exploratoire (non confirmatoire)
+network:
+  enabled: true
+  ebic_gamma: 0.5
+  cs_min: 0.25                  # Epskamp et al. (2018) : CS < 0,25 = non interprétable ; ≥ 0,5 = stable
+  cs_good: 0.5
+  bootstrap: {edges: 100, case_drop: 40}
+  min_n: 60
+
+# Quotas (protocole 4.5 : choix raisonné + quotas secteur × taille). Cibles à renseigner par l'équipe.
+quotas:
+  secteur_g: {}                 # ex. {Commerce: 60, Services: 60, "Production & BTP": 40, Autre: 20}
+  taille_g: {}                  # ex. {"<10": 80, "10-49": 70, "50+": 30}
+  ville: {}
+
+hypotheses:
+  - id: H1
+    qs: QS1
+    os: OS1
+    statement: "Une gouvernance décisionnelle hiérarchique/centralisée du projet augmente la probabilité d'échec, comparée à une gouvernance participative."
+    question: "Dans quelle mesure le mode de gouvernance décisionnelle du projet influence-t-il la probabilité d'échec ?"
+    objective: "Mesurer l'effet du mode de gouvernance décisionnelle sur la probabilité d'échec du projet."
+    test: "Régression logistique binaire (ou ordinale), contrôles inclus."
+    expected: "+"
+  - id: H2
+    qs: QS2
+    os: OS2
+    statement: "Un faible niveau de compétences numériques de l'équipe projet augmente la probabilité d'échec."
+    question: "Quel est l'effet du niveau de compétences numériques de l'équipe projet sur l'issue du projet ?"
+    objective: "Évaluer l'effet du niveau de compétences numériques de l'équipe projet sur l'issue du projet."
+    test: "Régression logistique multiple (effet net, contrôles et autres prédicteurs inclus)."
+    expected: "+"
+  - id: H3
+    qs: QS3
+    os: OS3
+    statement: "Le soutien effectif de la direction générale modère négativement l'effet des facteurs de risque organisationnels sur la probabilité d'échec."
+    question: "Dans quelle mesure le soutien effectif de la direction générale modère-t-il l'effet des autres facteurs organisationnels ?"
+    objective: "Analyser le rôle modérateur du soutien de la direction générale."
+    test: "Régression logistique avec termes d'interaction (soutien × chacun des 3 facteurs de risque) ; test du rapport de vraisemblance conjoint."
+    expected: "-"
+  - id: H4
+    qs: QS4
+    os: OS4
+    statement: "Le niveau de formalisation de l'entreprise modère la relation entre gouvernance décisionnelle et échec du projet, l'effet de H1 étant plus marqué dans les entreprises à gouvernance familiale ou informelle."
+    question: "Le niveau de formalisation de l'entreprise modère-t-il la relation entre facteurs organisationnels et échec du projet ?"
+    objective: "Analyser le rôle modérateur du niveau de formalisation de l'entreprise."
+    test: "Régression logistique avec interaction gouvernance × formalisation (test du rapport de vraisemblance, 2 ddl) ; effets simples par catégorie ; interaction gouvernance × propriété familiale."
+    expected: "decroissant"
+  - id: H5
+    qs: QS5
+    os: OS5
+    statement: "Une faible qualité de la communication interne au sein de l'équipe projet augmente la probabilité d'échec."
+    question: "Quelle est l'influence de la qualité de la communication interne sur l'issue du projet ?"
+    objective: "Évaluer l'effet de la qualité de la communication interne sur l'issue du projet."
+    test: "Régression logistique multiple (effet net)."
+    expected: "+"
+
+meta:
+  protocol_title: "Les déterminants organisationnels de l'échec des projets de digitalisation dans les PME privées béninoises"
+  framework: "Technology–Organization–Environment (dimension organisationnelle en cadre principal) + théorie de la décision organisationnelle (garbage can)"
+  limits:
+    - "Échantillonnage non probabiliste (choix raisonné + quotas) : les résultats décrivent les PME digitalisées accessibles via les canaux mobilisés."
+    - "Biais de mémoire possible pour les projets menés il y a plus d'un an."
+    - "Biais de désirabilité sociale sur la déclaration d'échec, atténué par l'anonymisation."
+    - "Issue mesurée par auto-évaluation du répondant, corroborée par le taux d'utilisation effective."

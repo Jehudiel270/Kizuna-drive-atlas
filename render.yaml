@@ -1,0 +1,19 @@
+# Blueprint Render : API FastAPI (la base Postgres est sur Neon, voir docs/DEPLOIEMENT.md)
+services:
+  - type: web
+    name: kizuna-atlas-api
+    runtime: docker
+    rootDir: api
+    plan: starter            # « free » fonctionne mais s'endort après 15 min d'inactivité (le webhook Tally risque d'échouer)
+    healthCheckPath: /health
+    envVars:
+      - {key: DATABASE_URL, sync: false}
+      - {key: JWT_SECRET, generateValue: true}
+      - {key: EMAIL_SALT, generateValue: true}
+      - {key: ADMIN_EMAIL, sync: false}
+      - {key: ADMIN_PASSWORD, sync: false}
+      - {key: TALLY_FORM_ID, value: 446dvO}
+      - {key: TALLY_API_KEY, sync: false}
+      - {key: TALLY_SIGNING_SECRET, sync: false}
+      - {key: CORS_ORIGINS, sync: false}
+      - {key: DEMO_MODE, value: "false"}
