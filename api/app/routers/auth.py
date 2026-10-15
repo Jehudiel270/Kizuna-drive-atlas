@@ -48,8 +48,8 @@ def users(db: Session = Depends(get_db), admin: User = Depends(require_role("adm
 def create_user(body: UserIn, db: Session = Depends(get_db), admin: User = Depends(require_role("admin"))):
     if body.role not in ("admin", "analyste", "lecteur"):
         raise HTTPException(400, "Rôle invalide")
-    if len(body.password) < 10:
-        raise HTTPException(400, "Mot de passe : 10 caractères minimum")
+    if len(body.password) < 5:
+        raise HTTPException(400, "Mot de passe : 5 caractères minimum")
     email = body.email.strip().lower()
     if db.scalar(select(User).where(User.email == email)):
         raise HTTPException(409, "E-mail déjà utilisé")

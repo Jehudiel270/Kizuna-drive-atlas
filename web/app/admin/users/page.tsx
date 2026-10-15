@@ -60,12 +60,12 @@ export default function UserManagement() {
       <PageHead title="Gestion des accès">Créez les comptes de l’équipe. Les mots de passe sont envoyés directement à l’API et ne sont jamais affichés dans la liste.</PageHead>
       {message && <div className="callout ok" role="status">{message}</div>}
       <ErrorBox error={error} />
-      <Card title="Créer un compte" sub="Utilisez un mot de passe unique d’au moins 10 caractères. Communiquez-le à son destinataire par un canal privé.">
+      <Card title="Créer un compte" sub="Le mot de passe doit contenir au moins 5 caractères. Communiquez-le à son destinataire par un canal privé.">
         <form className="account-form" onSubmit={createAccount}>
           <div><label className="f" htmlFor="account-name">Nom</label><input id="account-name" type="text" autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} /></div>
           <div><label className="f" htmlFor="account-email">E-mail</label><input id="account-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></div>
           <div><label className="f" htmlFor="account-role">Rôle</label><select id="account-role" value={role} onChange={(event) => setRole(event.target.value)}><option value="analyste">Analyste</option><option value="lecteur">Lecteur</option><option value="admin">Administrateur</option></select></div>
-          <div><label className="f" htmlFor="account-password">Mot de passe initial</label><input id="account-password" type="password" autoComplete="new-password" minLength={10} required value={password} onChange={(event) => setPassword(event.target.value)} /></div>
+          <div><label className="f" htmlFor="account-password">Mot de passe initial</label><input id="account-password" type="password" autoComplete="new-password" minLength={5} required value={password} onChange={(event) => setPassword(event.target.value)} /></div>
           <button className="btn primary" type="submit" disabled={saving}>{saving && <span className="spin" />}Créer le compte</button>
         </form>
       </Card>
